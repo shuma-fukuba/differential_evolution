@@ -53,8 +53,9 @@ class Logger:
         if self.config.log_out:
             # ヘッダー作成
             head = "evals,fx," + \
-                ','.join(["x{}".format(i) for i in range(self.config.prob_dimension)])
-            np.savetxt(self.path_trial + '/trial{}.csv'.format(self.config.seed),
+                ','.join([f"x{i}"
+                         for i in range(self.config.prob_dimension)])
+            np.savetxt(f'{self.path_trial}/trial{self.config.seed}.csv',
                        np.array(self.dat), delimiter=',', header=head)  # 出力
         print(" trial: {:03}\tevals: {}\tfx: {}".format(
             self.config.seed, evals, pop[self.answer].f))  # コンソール表示
@@ -73,21 +74,19 @@ class Statistics:
         self.config = config
         self.function = function
 
-    """ インスタンスメソッド """
     # 統計作成
-
     def out_statistics(self):
         if self.config.log_out:
             # csvファイルの読み取り 全試行一覧表示
-            df = None
+            df = pd.DataFrame()
             for i in range(self.config.max_trial):
                 dat = pd.read_csv(
-                    self.path_dat+'/trial{}.csv'.format(i+1), index_col=0)
+                    self.path_dat + f'/trial{i+1}.csv', index_col=0)
                 if i == 0:
                     df = pd.DataFrame(
-                        {'trial{}'.format(i+1): np.array(dat['fx'])}, index=dat.index)
+                        {f'trial{i+1}': np.array(dat['fx'])}, index=dat.index)
                 else:
-                    df['trial{}'.format(i+1)] = np.array(dat['fx'])
+                    df[f'trial{i+1}'] = np.array(dat['fx'])
             df.to_csv(self.path_out + "all_trials.csv")
 
             # 統計処理（最小値・最大値・四分位数・平均）
@@ -113,8 +112,8 @@ class Statistics:
             }, index=df.index)
 
             # csv出力
-            _out.to_csv(self.path_out + "statistics_" +
-                        self.function.prob_name + ".csv")
+            _out.to_csv(
+                f"{self.path_out}statistics_{self.function.prob_name}.csv")
 
             # 図の作成
             fig = plt.figure(figsize=(10, 4))

@@ -14,12 +14,15 @@ from function import Function
 
 
 class GeneticAlgorithm:
-    def __init__(self, config: Configuration, function: Function):
+    """parent genetic algorithm"""
+
+    def __init__(self, config: Configuration, function: Function) -> None:
         self.config = config  # 設定
         self.function = function  # 関数
         self.pop = []  # 個体群
 
     def initialize_solutions(self):
+        """initialize solutions"""
         for i in range(self.config.max_pop):
             self.pop.append(Solution(self.config, self.function))
             self.get_fitness(self.pop[i])
@@ -81,22 +84,22 @@ class GeneticAlgorithm:
 
     # 子個体の生成
     def generate_offspring(self, p1, p2):
-        o1, o2 = self.apply_x_over(Solution(self.config, self.function, parent=p1), Solution(
+        solution_1, solution_2 = self.apply_x_over(Solution(self.config, self.function, parent=p1), Solution(
             self.config, self.function, parent=p2))
-        o1.mutation()
-        o2.mutation()
-        return o1, o2
+        solution_1.mutation()
+        solution_2.mutation()
+        return solution_1, solution_2
 
     # 交叉（一点交叉）
-    def apply_x_over(self, o1, o2):
+    def apply_x_over(self, solution_1, solution_2):
         if self.config.rd.rand() >= self.config.p_x:
-            return o1, o2
+            return solution_1, solution_2
         x_point = self.config.rd.randint(0, self.config.prob_dimension)
         for i in range(x_point):
-            tmp = o1.x[i]
-            o1.x[i] = o2.x[i]
-            o2.x[i] = tmp
-        return o1, o2
+            tmp = solution_1.x[i]
+            solution_1.x[i] = solution_2.x[i]
+            solution_2.x[i] = tmp
+        return solution_1, solution_2
 
     # 評価値fの計算
     def get_fitness(self, solution):
@@ -107,11 +110,13 @@ class GeneticAlgorithm:
 class Solution:
 
     def __init__(self, config: Configuration, function: Function, parent=None):
-        self.config, self.function, self.x, self.f = config, function, [], 0.
+        self.config, self.function, self.x, self.f = \
+            config, function, [], 0.
         # 個体の初期化
         if parent is None:
             self.x = [self.config.rd.uniform(
-                self.function.axis_range[0], self.function.axis_range[1]) for _ in range(self.config.prob_dimension)]
+                self.function.axis_range[0], self.function.axis_range[1])
+                for _ in range(self.config.prob_dimension)]
         # 親個体のコピー
         else:
             self.x = [parent.x[i] for i in range(self.config.prob_dimension)]

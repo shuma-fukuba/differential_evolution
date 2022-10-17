@@ -20,7 +20,7 @@ class Configuration:
 
         # GAの設定
         self.max_pop = 50  # 個体数
-        # self.max_gen    = 600  # 最大世代数(今回はmax_evalsで制限)
+        # self.max_gen = 600  # 最大世代数(今回はmax_evalsで制限)
         self.p_x = 0.8  # 交叉率
         self.p_m = 0.04  # 突然変異率
         self.p_elite = 0.5  # 淘汰率

@@ -1,5 +1,5 @@
 ###### main.py #####
-#                                           Last Update:  2020/4/13
+# Last Update:  2020/4/13
 #
 # プログラム実行用ファイル
 # F5キーで実行
@@ -24,10 +24,6 @@ def run(optimizer: GeneticAlgorithm,
         config: Configuration,
         function: Function,
         log: Logger) -> None:
-    # optimizer GeneticAlgorithmインスタンス
-    # config Configurationのインスタンス
-    # function Functionのインスタンス
-    # log Loggerのインスタンス
     optimizer.initialize_solutions()  # 初期化
     log.logging(optimizer.pop, function.total_evals)  # 初期個体群ログ
     while function.total_evals < config.max_evals:  # 評価回数上限まで実行

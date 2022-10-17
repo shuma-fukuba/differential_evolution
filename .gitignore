@@ -2,3 +2,5 @@ __pycache__
 _result_GA
 .DS_Store
 .vscode
+
+*.ipynb
