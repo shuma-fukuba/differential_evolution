@@ -19,46 +19,46 @@ class GeneticAlgorithm:
         self.function = function  # 関数
         self.pop = []  # 個体群
 
-    def initializeSolutions(self):
+    def initialize_solutions(self):
         for i in range(self.config.max_pop):
             self.pop.append(Solution(self.config, self.function))
-            self.getFitness(self.pop[i])
+            self.get_fitness(self.pop[i])
 
     # 次世代個体群生成
-    def getNextPopulation(self):
-        self.getElite()
+    def get_next_population(self):
+        self.get_elite()
         while len(self.pop) < self.config.max_pop:
-            p1, p2 = self.selectParent()
-            o1, o2 = self.generateOffspring(p1, p2)
-            self.getFitness(o1)
-            self.getFitness(o2)
+            p1, p2 = self.select_parent()
+            o1, o2 = self.generate_offspring(p1, p2)
+            self.get_fitness(o1)
+            self.get_fitness(o2)
             self.pop.append(o1)
             self.pop.append(o2)
 
     # 淘汰（親個体の選択）
-    def selectParent(self):
+    def select_parent(self):
         if self.config.selection == "RW":
-            return self.RWselection(), self.RWselection()
+            return self.RW_selection(), self.RW_selection()
         elif self.config.selection == "TS":
-            return self.TSselection(), self.TSselection()
+            return self.TS_selection(), self.TS_selection()
         else:
-            print("Error in selectParent")
+            print("Error in select_parent")
 
     # ルーレット選択
-    def RWselection(self):
-        Fsum = 0.
-        for i, v in enumerate(self.pop):
-            Fsum += v.f
-        choice = Fsum * self.config.rd.rand()
-        Fsum = 0.
-        for i, v in enumerate(self.pop):
-            Fsum += v.f
-            if Fsum >= choice:
+    def RW_selection(self):
+        f_sum = 0.
+        for v in self.pop:
+            f_sum += v.f
+        choice = f_sum * self.config.rd.rand()
+        f_sum = 0.
+        for v in self.pop:
+            f_sum += v.f
+            if f_sum >= choice:
                 return v
         return None
 
     # トーナメント選択（トーナメントサイズ Nt=1）
-    def TSselection(self):
+    def TS_selection(self):
         i, j = self.config.rd.randint(
             0, len(self.pop)), self.config.rd.randint(0, len(self.pop))
 
@@ -68,7 +68,7 @@ class GeneticAlgorithm:
             return self.pop[j]
 
     # エリート戦略
-    def getElite(self):
+    def get_elite(self):
         for i, i_pop in enumerate(self.pop):
             for j, j_pop in enumerate(self.pop):
                 if i != j and i_pop.f > j_pop.f:
@@ -80,15 +80,15 @@ class GeneticAlgorithm:
             self.pop.pop(0)
 
     # 子個体の生成
-    def generateOffspring(self, p1, p2):
-        o1, o2 = self.applyXover(Solution(self.config, self.function, parent=p1), Solution(
+    def generate_offspring(self, p1, p2):
+        o1, o2 = self.apply_x_over(Solution(self.config, self.function, parent=p1), Solution(
             self.config, self.function, parent=p2))
         o1.mutation()
         o2.mutation()
         return o1, o2
 
     # 交叉（一点交叉）
-    def applyXover(self, o1, o2):
+    def apply_x_over(self, o1, o2):
         if self.config.rd.rand() >= self.config.p_x:
             return o1, o2
         x_point = self.config.rd.randint(0, self.config.prob_dimension)
@@ -99,7 +99,7 @@ class GeneticAlgorithm:
         return o1, o2
 
     # 評価値fの計算
-    def getFitness(self, solution):
+    def get_fitness(self, solution):
         solution.f = self.function.do_evaluate(solution.x)
 
 

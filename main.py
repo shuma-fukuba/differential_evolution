@@ -18,15 +18,20 @@ from logger import Logger, Statistics
 # -----------------------------------------------------
 
 # 実行処理
-def run(optimizer: GeneticAlgorithm, config: Configuration, function: Function, log: Logger) -> None:
+
+
+def run(optimizer: GeneticAlgorithm,
+        config: Configuration,
+        function: Function,
+        log: Logger) -> None:
     # optimizer GeneticAlgorithmインスタンス
     # config Configurationのインスタンス
     # function Functionのインスタンス
     # log Loggerのインスタンス
-    optimizer.initializeSolutions()  # 初期化
+    optimizer.initialize_solutions()  # 初期化
     log.logging(optimizer.pop, function.total_evals)  # 初期個体群ログ
     while function.total_evals < config.max_evals:  # 評価回数上限まで実行
-        optimizer.getNextPopulation()  # 次世代個体群生成
+        optimizer.get_next_population()  # 次世代個体群生成
         log.logging(optimizer.pop, function.total_evals)  # 次世代個体群ログ
     log.out_log(optimizer.pop, function.total_evals)  # ログ出力(trial'n'.csv)
 
@@ -49,6 +54,6 @@ if __name__ == '__main__':
             # 探索実行
             run(optimizer, config, function, log)
         statistics = Statistics(config, function, log.path_out,
-                         log.path_trial)  # 関数ごとの統計を作成
+                                log.path_trial)  # 関数ごとの統計を作成
         # 統計出力(all_trials.csv, statistics.csv)
         statistics.out_statistics()

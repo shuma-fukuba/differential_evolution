@@ -1,5 +1,5 @@
 ###### function.py #####
-#                                           Last Update:  2020/4/21
+# Last Update:  2020/4/21
 #
 # 関数設定用ファイル
 # インスタンスはfncとして生成
