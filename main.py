@@ -20,6 +20,10 @@ import logger           as lg
 
 # 実行処理
 def run(opt, cnf, fnc, log):
+    # opt GeneticAlgorithmインスタンス
+    # cnf Configurationのインスタンス
+    # fnc Functionのインスタンス
+    # log Loggerのインスタンス
     opt.initializeSolutions()                   # 初期化
     log.logging(opt.pop, fnc.total_evals)       # 初期個体群ログ
     while fnc.total_evals < cnf.max_evals:      # 評価回数上限まで実行
@@ -28,7 +32,7 @@ def run(opt, cnf, fnc, log):
     log.outLog(opt.pop, fnc.total_evals)        # ログ出力(trial'n'.csv)
 
 
-""" main (最初に実行) """
+""" main (最初に実行) ""
 if __name__ == '__main__':
     cnf = cf.Configuration()                                        # configurationインスタンス生成
     for i in range(len(cnf.prob_name)):                             # 関数の個数だけ探索
