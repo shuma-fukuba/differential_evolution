@@ -10,17 +10,25 @@ class DifferentialEvolution(GeneticAlgorithm):
 
     def get_next_population(self):
         self.get_elite()
-        while len(self.solutions) < self.config.max_pop:
             # 突然変異
-            for target in self.solutions:
-                parent_1, parent_2 = self.select_parent()
-                offspring = self.mutation(target, parent_1, parent_2)
-                # 交叉
-                offspring = self.crossover(offspring, parent_1)  # NOTE: parent_1でいいか確認
-                self.get_fitness(offspring)
-                superior = self.evaluate_offspring(offspring=offspring, parent=parent_1)
-                self.solutions.append(superior)
-        # TODO: すべての要素に対し交叉と突然変異を適用したら選択アルゴリズム
+        for i, solution in enumerate(self.solutions):
+            """
+            突然変異：iではない3個体をランダムに選択
+            交叉：iとmutationを交叉
+            """
+            # 突然変異
+            solution_1, solution_2, solution_3 = \
+                self.config.rd.sample(
+                    [j for j, _ in enumerate(self.solutions) if j != i], 3)
+            mutated_solution = self.mutation(
+                solution_1, solution_2, solution_3)
+            
+            # 交叉
+            new_solution = self.crossover(solution, mutated_solution)
+            # 選択
+            self.evaluate_offspring(offspring=new_solution, parent=solution)
+        # TODO: debug 10/18
+
 
     def mutation(self,
                  target_solution: Solution,
@@ -33,7 +41,7 @@ class DifferentialEvolution(GeneticAlgorithm):
             self.config.F * (solution_2.x - solution_3.x)
         return target_solution
 
-    def crossover(self, solution_1: Solution, solution_2: Solution)-> Solution:
+    def crossover(self, solution_1: Solution, solution_2: Solution) -> Solution:
         """
         2つのsolution v, xを受け取る
         乱数を生成(0以上1以下)
@@ -59,9 +67,9 @@ class DifferentialEvolution(GeneticAlgorithm):
         return child_solution
 
     def evaluate_offspring(self, offspring: Solution, parent: Solution):
-        """子要素と親要素の評価値を比較し、優れているほうを返す"""
+        """子要素と親要素の評価値を比較し、優れているほうを残す"""
         if offspring.f <= parent.f:
             # 親を削除
-            return offspring
-        else:
-            return parent
+            self.solutions.append(offspring)
+            self.solutions.remove(parent)
+        # 親が優れている場合は何もしないでok
