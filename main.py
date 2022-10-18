@@ -6,6 +6,7 @@
 
 # 他ファイルのインポート
 from configuration import Configuration
+from differential_evolution import DifferentialEvolution
 from function import Function
 from optimizer import GeneticAlgorithm
 from logger import Logger, Statistics
@@ -46,7 +47,8 @@ if __name__ == '__main__':
             # ランダムシード値設定
             config.set_random_seed(seed=j+1)
             # optimizerインスタンス生成
-            optimizer = GeneticAlgorithm(config, function)
+            # optimizer = GeneticAlgorithm(config, function)
+            optimizer = DifferentialEvolution(config=config, function=function)
             # 探索実行
             run(optimizer, config, function, log)
         statistics = Statistics(config, function, log.path_out, log.path_trial)  # 関数ごとの統計を作成

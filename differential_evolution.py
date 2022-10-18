@@ -19,7 +19,7 @@ class DifferentialEvolution(GeneticAlgorithm):
             # 突然変異
             solution_1, solution_2, solution_3 = \
                 self.config.rd.sample(
-                    [j for j, _ in enumerate(self.solutions) if j != i], 3)
+                    [j for j in range(len(self.solutions)) if j != i], 3)  # ほんとはselect_parentが望ましい
             mutated_solution = self.mutation(
                 solution_1, solution_2, solution_3)
             
