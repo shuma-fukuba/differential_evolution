@@ -34,7 +34,6 @@ class Logger:
                 os.makedirs(self.path_trial)
 
     # 個体群ログ取得
-
     def logging(self, pop, evals, do_console=False):
         # 最良個体番号取得
         self.answer = 0

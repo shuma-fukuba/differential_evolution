@@ -25,6 +25,7 @@ class Configuration:
         self.p_m = 0.04  # 突然変異率
         self.p_elite = 0.5  # 淘汰率
         self.selection = "RW"  # 選択の方法
+        self.F = 0.5  # DEのmutationにおけるFパラメータ
 
         # 問題設定
         self.prob_dimension = 20  # 問題の次元数

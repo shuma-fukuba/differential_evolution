@@ -24,12 +24,12 @@ def run(optimizer: GeneticAlgorithm,
         config: Configuration,
         function: Function,
         log: Logger) -> None:
-    optimizer.initialize_solutions()  # 初期化
-    log.logging(optimizer.pop, function.total_evals)  # 初期個体群ログ
+    optimizer.initialize_solutions()  #  初期化
+    log.logging(optimizer.solutions, function.total_evals)  # 初期個体群ログ
     while function.total_evals < config.max_evals:  # 評価回数上限まで実行
         optimizer.get_next_population()  # 次世代個体群生成
-        log.logging(optimizer.pop, function.total_evals)  # 次世代個体群ログ
-    log.out_log(optimizer.pop, function.total_evals)  # ログ出力(trial'n'.csv)
+        log.logging(optimizer.solutions, function.total_evals)  # 次世代個体群ログ
+    log.out_log(optimizer.solutions, function.total_evals)  # ログ出力(trial'n'.csv)
 
 
 if __name__ == '__main__':
@@ -49,7 +49,6 @@ if __name__ == '__main__':
             optimizer = GeneticAlgorithm(config, function)
             # 探索実行
             run(optimizer, config, function, log)
-        statistics = Statistics(config, function, log.path_out,
-                                log.path_trial)  # 関数ごとの統計を作成
+        statistics = Statistics(config, function, log.path_out, log.path_trial)  # 関数ごとの統計を作成
         # 統計出力(all_trials.csv, statistics.csv)
         statistics.out_statistics()

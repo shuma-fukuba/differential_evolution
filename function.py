@@ -4,8 +4,9 @@
 # 関数設定用ファイル
 # インスタンスはfncとして生成
 
-import sys
 import numpy as np
+
+from error import FunctionError
 
 
 class Function:
@@ -25,11 +26,10 @@ class Function:
             self.evaluate = self.F5
             self.axis_range = [-100, 100]
         else:  # 関数不在時
-            print("Error: Do not exist Function {} (function.py)".format(prob_name))
-            sys.exit()
+            raise FunctionError(f"Error: Do not exist Function {prob_name} (function.py)")
 
         # 関数名出力
-        print("\t\t[ Problem : {} ]\t\t".format(prob_name))
+        print(f"\t\t[ Problem : {prob_name} ]\t\t")
 
     # 評価実行
     def do_evaluate(self, x):
@@ -43,16 +43,14 @@ class Function:
     # F1 Sphere : f(x) = Σ(x[i]^2)
     def F1(self, x):
         if not len(x) == self.prob_dimension:
-            print("Error: Solution X is not a {}-d vector".format(self.prob_dimension))
-            return None
+            raise FunctionError(f"Error: Solution X is not a {self.prob_dimension}-d vector")
         ret = np.sum(x**2)
         return ret
 
     # F5 Griewank
     def F5(self, x):
         if not len(x) == self.prob_dimension:
-            print("Error: Solution X is not a {}-d vector".format(self.prob_dimension))
-            return None
+            raise FunctionError(f"Error: Solution X is not a {self.prob_dimension}-d vector")
         sum_1 = 0.
         prod_1 = 1.
         for i in range(self.prob_dimension):
