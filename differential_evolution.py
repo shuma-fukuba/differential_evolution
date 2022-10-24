@@ -8,24 +8,31 @@ from optimizer import GeneticAlgorithm, Solution
 class DifferentialEvolution(GeneticAlgorithm):
     """differential evolution"""
 
+    # 次世代個体群生成
     def get_next_population(self):
-        self.get_elite()
-            # 突然変異
+        # self.get_elite()
+        # 突然変異
         for i, solution in enumerate(self.solutions):
             """
             突然変異：iではない3個体をランダムに選択
             交叉：iとmutationを交叉
             """
             # 突然変異
-            solution_1, solution_2, solution_3 = self.select_parent()
-            mutated_solution = self.mutation(
-                solution_1, solution_2, solution_3)
+            # solution_1, solution_2, solution_3 = self.select_parent()
+            """
+            solutionに対して突然変異を起こさせる
+            任意の個体を２つ選んで、new solutionを更新させる
+            """
+            # とりあえず親個体はランダムに選んで見る
+            parent_1, parent_2 = self.select_parent()
+            mutated_solution = self.mutation(target_solution=solution,
+                                             solution_2=parent_1,
+                                             solution_3=parent_2)
 
             # 交叉
             new_solution = self.crossover(solution, mutated_solution)
             # 選択
             self.evaluate_offspring(offspring=new_solution, parent=solution)
-
 
     def mutation(self,
                  target_solution: Solution,
@@ -34,9 +41,13 @@ class DifferentialEvolution(GeneticAlgorithm):
         """選別した3つの個体を使って突然変異させる
         """
         self.get_fitness(target_solution)
-        target_solution.x += \
-            self.config.F * (np.array(solution_2.x) - np.array(solution_3.x))
-        return target_solution
+        mutated = Solution(config=self.config, function=self.function)
+
+        mutated.f = target_solution.f
+        mutated.x = target_solution.x + self.config.F * \
+            (np.array(solution_2.x) - np.array(solution_3.x))
+        self.get_fitness(mutated)
+        return mutated
 
     def crossover(self, solution_1: Solution, solution_2: Solution) -> Solution:
         """
@@ -61,6 +72,7 @@ class DifferentialEvolution(GeneticAlgorithm):
 
         child_solution = Solution(config=self.config, function=self.function)
         child_solution.x = new_solution
+        self.get_fitness(child_solution)
         return child_solution
 
     def evaluate_offspring(self, offspring: Solution, parent: Solution):
