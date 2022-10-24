@@ -63,7 +63,7 @@ class GeneticAlgorithm:
     def get_next_population(self):
         self.get_elite()
         while len(self.solutions) < self.config.max_pop:
-            p1, p2 = self.select_parent()  # 交叉用の親要素２つをゲット
+            p1, p2, _ = self.select_parent()  # 交叉用の親要素２つをゲット
             o1, o2 = self.generate_offspring(p1, p2)  # 子種（子要素）を生成（交叉と突然変異）
             self.get_fitness(o1)
             self.get_fitness(o2)
@@ -74,9 +74,9 @@ class GeneticAlgorithm:
     def select_parent(self) -> tuple[Solution, Solution]:
         """Returns two solutions"""
         if self.config.selection == "RW":
-            return self.RW_selection(), self.RW_selection()
+            return self.RW_selection(), self.RW_selection(), self.RW_selection()
         elif self.config.selection == "TS":
-            return self.TS_selection(), self.TS_selection()
+            return self.TS_selection(), self.TS_selection(), self.TS_selection()
         else:
             raise SelectParentError('error in select_parent')
 
@@ -120,7 +120,7 @@ class GeneticAlgorithm:
             Solution(self.config, self.function, parent=solution_2)
         )  # 交叉
         new_solution_1.mutation()
-        new_solution_2.mutation()  
+        new_solution_2.mutation()
         return solution_1, solution_2
 
     # 交叉（一点交叉）

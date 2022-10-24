@@ -1,7 +1,7 @@
 """
 import parent class and other classes being necessary to annotation
 """
-from random import paretovariate
+import numpy as np
 from optimizer import GeneticAlgorithm, Solution
 
 
@@ -17,28 +17,25 @@ class DifferentialEvolution(GeneticAlgorithm):
             交叉：iとmutationを交叉
             """
             # 突然変異
-            solution_1, solution_2, solution_3 = \
-                self.config.rd.sample(
-                    [j for j in range(len(self.solutions)) if j != i], 3)  # ほんとはselect_parentが望ましい
+            solution_1, solution_2, solution_3 = self.select_parent()
             mutated_solution = self.mutation(
                 solution_1, solution_2, solution_3)
-            
+
             # 交叉
             new_solution = self.crossover(solution, mutated_solution)
             # 選択
             self.evaluate_offspring(offspring=new_solution, parent=solution)
-        # TODO: debug 10/18
 
 
     def mutation(self,
                  target_solution: Solution,
                  solution_2: Solution,
                  solution_3: Solution) -> Solution:
-        """選別した3つの個体を使って突然変異させる(パラメータはxのハズ...)
+        """選別した3つの個体を使って突然変異させる
         """
-        self.get_fitness(self, target_solution)
+        self.get_fitness(target_solution)
         target_solution.x += \
-            self.config.F * (solution_2.x - solution_3.x)
+            self.config.F * (np.array(solution_2.x) - np.array(solution_3.x))
         return target_solution
 
     def crossover(self, solution_1: Solution, solution_2: Solution) -> Solution:

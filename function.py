@@ -44,7 +44,7 @@ class Function:
     def F1(self, x):
         if not len(x) == self.prob_dimension:
             raise FunctionError(f"Error: Solution X is not a {self.prob_dimension}-d vector")
-        ret = np.sum(x**2)
+        ret = np.sum([item ** 2 for item in x])
         return ret
 
     # F5 Griewank
