@@ -24,12 +24,12 @@ class DifferentialEvolution(GeneticAlgorithm):
             solutionに対して突然変異を起こさせる
             任意の個体を２つ選んで、new solutionを更新させる
             """
-            # best1で取ってみる
-            best_solution = self.get_best_solution()
-            random_parent_1, random_parent_2 = random.sample(self.solutions, 2)
-            mutated_solution = self.mutation(target_solution=best_solution,
-                                             solution_2=random_parent_1,
-                                             solution_3=random_parent_2)
+            # 親個体3つをランダムに選んで変異させてみる
+            parent_1, parent_2, parent_3 =random.sample(
+                self.solutions, 3)
+            mutated_solution = self.mutation(target_solution=parent_1,
+                                             solution_2=parent_2,
+                                             solution_3=parent_3)
 
             # 交叉
             new_solution = self.crossover(solution, mutated_solution)
