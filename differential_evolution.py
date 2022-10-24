@@ -1,6 +1,7 @@
 """
 import parent class and other classes being necessary to annotation
 """
+import random
 import numpy as np
 from optimizer import GeneticAlgorithm, Solution
 
@@ -23,11 +24,12 @@ class DifferentialEvolution(GeneticAlgorithm):
             solutionに対して突然変異を起こさせる
             任意の個体を２つ選んで、new solutionを更新させる
             """
-            # とりあえず親個体はランダムに選んで見る
-            parent_1, parent_2 = self.select_parent()
-            mutated_solution = self.mutation(target_solution=solution,
-                                             solution_2=parent_1,
-                                             solution_3=parent_2)
+            # best1で取ってみる
+            best_solution = self.get_best_solution()
+            random_parent_1, random_parent_2 = random.sample(self.solutions, 2)
+            mutated_solution = self.mutation(target_solution=best_solution,
+                                             solution_2=random_parent_1,
+                                             solution_3=random_parent_2)
 
             # 交叉
             new_solution = self.crossover(solution, mutated_solution)
@@ -82,3 +84,6 @@ class DifferentialEvolution(GeneticAlgorithm):
             self.solutions.append(offspring)
             self.solutions.remove(parent)
         # 親が優れている場合は何もしないでok
+    
+    def get_best_solution(self) -> Solution:
+        return min(self.solutions, key=lambda x: x.f)
