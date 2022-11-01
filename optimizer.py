@@ -138,3 +138,6 @@ class GeneticAlgorithm:
     def get_fitness(self, solution: Solution):
         # fitness -> 適合度の意
         solution.f = self.function.do_evaluate(solution.x)
+
+    def get_best_solution(self) -> Solution:
+        return min(self.solutions, key=lambda x: x.f)

@@ -84,6 +84,3 @@ class DifferentialEvolution(GeneticAlgorithm):
             self.solutions.append(offspring)
             self.solutions.remove(parent)
         # 親が優れている場合は何もしないでok
-    
-    def get_best_solution(self) -> Solution:
-        return min(self.solutions, key=lambda x: x.f)
