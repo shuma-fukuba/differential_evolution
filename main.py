@@ -27,9 +27,8 @@ def run(optimizer: GeneticAlgorithm,
         log: Logger) -> None:
     optimizer.initialize_solutions()  #  初期化
     log.logging(optimizer.solutions, function.total_evals)  # 初期個体群ログ
-    while function.total_evals < config.max_evals:  # 評価回数上限まで実行
-        optimizer.get_next_population()  # 次世代個体群生成
-        log.logging(optimizer.solutions, function.total_evals)  # 次世代個体群ログ
+    optimizer.optimize(log)  # 次世代個体群生成
+    log.logging(optimizer.solutions, function.total_evals)  # 次世代個体群ログ
     log.out_log(optimizer.solutions, function.total_evals)  # ログ出力(trial'n'.csv)
 
 
