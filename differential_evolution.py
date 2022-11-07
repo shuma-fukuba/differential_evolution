@@ -117,13 +117,14 @@ class DifferentialEvolution(GeneticAlgorithm):
         return min(self.solutions, key=lambda x: x.f)
 
     def get_f_i(self):
-        U = random.random()
-        f_i = self.m_f + 0.1 * (math.tan(math.pi * (U - 0.5)))
-        if f_i <= 0:
-            return self.get_f_i()
-        elif f_i >= 1:
-            return math.floor(f_i)
-        return f_i
+        # U = random.random()
+        # f_i = self.m_f + 0.1 * (math.tan(math.pi * (U - 0.5)))
+        # if f_i <= 0:
+        #     return self.get_f_i()
+        # elif f_i >= 1:
+        #     return math.floor(f_i)
+        # return f_i
+        return random.gauss(self.m_f, 0.1)
 
     def get_pbest_solution(self):
         p = random.random()  # 0 <= p <= 1
