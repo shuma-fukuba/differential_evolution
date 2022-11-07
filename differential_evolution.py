@@ -29,7 +29,7 @@ class DifferentialEvolution(GeneticAlgorithm):
     # 次世代個体群生成
     def get_next_population(self, s_f, s_cr):
         for i, solution in enumerate(self.solutions):
-            cr_i = random.gauss(self.m_cr, 0.1)
+            cr_i = self.config.rd.normal(loc=self.m_cr, scale=0.1)
             pbest_solution = self.get_pbest_solution()
             g1_solution = self.get_random_solution_g1(
                 pbest_solution=pbest_solution)
@@ -75,6 +75,9 @@ class DifferentialEvolution(GeneticAlgorithm):
         mutated.f = target_solution.f
         mutated.x = target_solution.x + self.config.F * \
             (np.array(solution_2.x) - np.array(solution_3.x))
+
+        # 定義域外の探索防止
+        mutated.prevent_out_dimension_search()
         self.get_fitness(mutated)
         return mutated
 
@@ -117,8 +120,8 @@ class DifferentialEvolution(GeneticAlgorithm):
         return min(self.solutions, key=lambda x: x.f)
 
     def get_f_i(self):
-        U = random.random()
-        f_i = self.m_f + 0.1 * (math.tan(math.pi * (U - 0.5)))
+        u = self.config.rd.random()
+        f_i = self.m_f + 0.1 * (math.tan(math.pi * (u - 0.5)))
         if f_i <= 0:
             return self.get_f_i()
         elif f_i >= 1:
@@ -127,14 +130,14 @@ class DifferentialEvolution(GeneticAlgorithm):
         # return random.gauss(self.m_f, 0.1)
 
     def get_pbest_solution(self):
-        p = random.random()  # 0 <= p <= 1
+        p = self.config.rd.random()  # 0 <= p <= 1
         pbest_nums = math.ceil(len(self.solutions) * p)
         pbests = sorted(self.solutions, key=lambda x: x.f)[:pbest_nums]
         return random.choice(pbests)
 
     def get_random_solution_g1(self, pbest_solution: Solution):
         merged_solutions = list(set(self.solutions) | set(self.archive))
-        g1_solution = random.choice(merged_solutions)
+        g1_solution = self.config.rd.choice(merged_solutions)
         if g1_solution == pbest_solution:
             return self.get_random_solution_g1(pbest_solution=pbest_solution)
         else:
@@ -142,7 +145,7 @@ class DifferentialEvolution(GeneticAlgorithm):
 
     def get_random_solution_g2(self, pbest_solution: Solution, g1_solution: Solution) -> Solution:
         merged_solutions = list(set(self.solutions) | set(self.archive))
-        g2_solution = random.choice(merged_solutions)
+        g2_solution = self.config.rd.choice(merged_solutions)
         if g2_solution == pbest_solution or g2_solution == g1_solution:
             return self.get_random_solution_g2(pbest_solution, g1_solution)
         else:
@@ -154,4 +157,4 @@ class DifferentialEvolution(GeneticAlgorithm):
         if solutions_len < archive_len:
             delete_num = archive_len - solutions_len
             for _ in range(delete_num):
-                self.archive.remove(random.choice(self.archive))
+                self.archive.remove(self.config.rd.choice(self.archive))

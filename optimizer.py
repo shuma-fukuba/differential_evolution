@@ -41,10 +41,12 @@ class Solution:
                 self.x[i] = np.clip(
                     self.x[i], self.function.axis_range[0], self.function.axis_range[1])
 
+    def prevent_out_dimension_search(self):
+        self.x = np.clip(
+            self.x, self.function.axis_range[0], self.function.axis_range[1])
+
 
 # 遺伝的アルゴリズム（実数）クラス
-
-
 class GeneticAlgorithm:
     """parent genetic algorithm"""
 
