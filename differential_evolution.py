@@ -17,7 +17,7 @@ class DifferentialEvolution(GeneticAlgorithm):
         self.m_cr = 0.5
         self.m_f = 0.5
         self.archive = []
-        self.C = 0.5
+        self.C = 0.5  # パラメータ調整
 
     def optimize(self, log: Logger):
         s_f = []
@@ -29,13 +29,10 @@ class DifferentialEvolution(GeneticAlgorithm):
     # 次世代個体群生成
     def get_next_population(self, s_f, s_cr):
         for i, solution in enumerate(self.solutions):
-            cr_i = random.gauss(self.m_cr, 0.1)  # 各個体solution_iの交叉確率
-            # TODO x_best_g 上位100%のベストなsolutionを撮ってくる
+            cr_i = random.gauss(self.m_cr, 0.1)
             pbest_solution = self.get_pbest_solution()
-            # TODO xr1: xiではない現在の集団Pから取り出す
             g1_solution = self.get_random_solution_g1(
                 pbest_solution=pbest_solution)
-            # TODO xr2: xidえもxr1でもないのをAとPの和集合から取り出す
             g2_solution = self.get_random_solution_g2(pbest_solution=pbest_solution,
                                                       g1_solution=g1_solution)
             f_i = self.get_f_i()
@@ -54,14 +51,17 @@ class DifferentialEvolution(GeneticAlgorithm):
             if new_solution.f <= solution.f:
                 self.solutions.remove(solution)
                 self.solutions.append(new_solution)
+                self.archive.append(solution)
 
                 s_cr.append(cr_i)
                 s_f.append(f_i)
             # xi, g + 1 = 交叉後
             # 交叉前の個体をアーカイブに投入
             # criをs_ｃｒに、Fiをs_fに入れる
+        self.randomly_delete_from_archive()
         self.m_cr = (1 - self.C) * self.m_cr + self.C * np.mean(s_cr)
-        self.m_f = (1 - self.C) * self.m_f + self.C * np.mean(s_f)
+        self.m_f = (1 - self.C) * self.m_f + self.C * \
+            (np.sum(np.array(s_f) ** 2) / sum(s_f))
 
     def mutation(self,
                  target_solution: Solution,
@@ -145,3 +145,11 @@ class DifferentialEvolution(GeneticAlgorithm):
             return self.get_random_solution_g2(pbest_solution, g1_solution)
         else:
             return g2_solution
+
+    def randomly_delete_from_archive(self):
+        solutions_len = len(self.solutions)
+        archive_len = len(self.archive)
+        if solutions_len < archive_len:
+            delete_num = archive_len - solutions_len
+            for _ in range(delete_num):
+                self.archive.remove(random.choice(self.archive))
