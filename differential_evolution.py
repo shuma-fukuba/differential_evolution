@@ -92,6 +92,7 @@ class DifferentialEvolution(GeneticAlgorithm):
             + f_i * (np.array(pbest_solution.x) - np.array(current_solution.x)) \
             + f_i * (np.array(g1_solution.x) - np.array(g2_solution.x))
         self.get_fitness(mutated)
+        mutated.prevent_out_dimension_search()
         return mutated
 
     def crossover(self, solution_1: Solution, solution_2: Solution) -> Solution:
